@@ -7,16 +7,16 @@ class ObjectArraySorter
      * TODO: Alias to sortByMethodResult
      * like OAS::sortByFooByName => getFoo()->getName()
      */
-    public function __callStatic($methodName)
-    {
-    }
+    // public static function __callStatic($methodName, $args)
+    // {
+    // }
 
     /*
      * Return the first value of an array
      * @param array $array
      * @return mixed
      */
-    public function first(array $array)
+    public static function first(array $array)
     {
         self::isEmptyArray(__METHOD__, $array);
         foreach ($array as $value) {
@@ -29,7 +29,7 @@ class ObjectArraySorter
      * @param array $array
      * @return array
      */
-    public function truncate(array $array, $limit)
+    public static function truncate(array $array, $limit)
     {
         self::isEmptyArray(__METHOD__, $array);
         self::hasAtLeast(__METHOD__, $array, $limit);
