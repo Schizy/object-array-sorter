@@ -3,6 +3,14 @@ namespace Backelite\AppBundle\ObjectArraySorter;
 
 class ObjectArraySorter
 {
+    /**
+     * TODO: Alias to sortByMethodResult
+     * like OAS::sortByFooByName => getFoo()->getName()
+     */
+    public function __callStatic($methodName)
+    {
+    }
+
     /*
      * Return the first value of an array
      * @param array $array
@@ -14,6 +22,19 @@ class ObjectArraySorter
         foreach ($array as $value) {
             return $value;
         }
+    }
+
+    /*
+     * Return the truncated array with $limit
+     * @param array $array
+     * @return array
+     */
+    public function truncate(array $array, $limit)
+    {
+        self::isEmptyArray(__METHOD__, $array);
+        self::hasAtLeast(__METHOD__, $array, $limit);
+
+        return array_splice($array, $limit);
     }
 
     /*
@@ -77,6 +98,7 @@ class ObjectArraySorter
         return $sortedArray;
     }
 
+    //Protected methods
     protected static function isObject($object)
     {
         if (!is_object($object)) {
@@ -98,6 +120,14 @@ class ObjectArraySorter
         if (!$array) {
             throw new \InvalidArgumentException(
                 "The array given to ObjectArraySorter::".$method." can't be empty."
+            );
+        }
+    }
+    protected static function hasAtLeast($method, $array, $limit)
+    {
+        if (count($array) < $limit) {
+            throw new \Exception(
+                "The limit given to ObjectArraySorter::".$method." is greater than the array."
             );
         }
     }
