@@ -1,25 +1,38 @@
 <?php
-namespace ObjectArraySorter;
+namespace Backelite\AppBundle\ObjectArraySorter;
 
 class ObjectArraySorter
 {
-    /**
+    /*
+     * Return the first value of an array
+     * @param array $array
+     * @return mixed
+     */
+    public function first(array $array)
+    {
+        self::isEmptyArray(__METHOD__, $array);
+        foreach ($array as $value) {
+            return $value;
+        }
+    }
+
+    /*
      * Alias to sortByMethodResult with getId
      * @param array $array
      * @return array
      */
-    static function sortById(array $array)
+    public static function sortById(array $array)
     {
         return self::sortByMethodResult($array, 'getId');
     }
 
-    /**
+    /*
      * Set the method results (can be chained) as array keys (sorted ASC)
      * @param array $array
      * @param $methodName
      * @return array
      */
-    static function sortByMethodResult(array $array, $methodName)
+    public static function sortByMethodResult(array $array, $methodName)
     {
         $sortedArray = [];
         $methodName = preg_replace('#\(|\)#', '', $methodName);
@@ -28,23 +41,24 @@ class ObjectArraySorter
         foreach ($array as $object) {
             self::isObject($object);
             $k = clone $object;
-            foreach($methodName as $method) {
+            foreach ($methodName as $method) {
                 self::isMethodExists($k, $method);
                 $k = $k->$method();
             }
             $sortedArray[$k] = $object;
         }
         ksort($sortedArray, SORT_FLAG_CASE | SORT_NATURAL);
+
         return $sortedArray;
     }
 
-    /**
+    /*
      * Filter an array by testing methods result
      * @param array $array
      * @param $methodName
      * @return array
      */
-    static function filterByMethodResult(array $array, $methodName)
+    public static function filterByMethodResult(array $array, $methodName)
     {
         //TODO: let the method chaining here too
         //TODO: precise the expected result in third argument?
@@ -59,6 +73,7 @@ class ObjectArraySorter
                 $sortedArray[$i] = $object;
             }
         }
+
         return $sortedArray;
     }
 
@@ -73,7 +88,17 @@ class ObjectArraySorter
     protected static function isMethodExists($object, $methodName)
     {
         if (!method_exists($object, $methodName)) {
-            throw new \InvalidArgumentException('The method '.$methodName.' is not implemented in '.get_class($object));
+            throw new \InvalidArgumentException(
+                'The method '.$methodName.' is not implemented in '.get_class($object)
+            );
+        }
+    }
+    protected static function isEmptyArray($method, array $array)
+    {
+        if (!$array) {
+            throw new \InvalidArgumentException(
+                "The array given to ObjectArraySorter::".$method." can't be empty."
+            );
         }
     }
 }
