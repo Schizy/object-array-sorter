@@ -53,7 +53,7 @@ class ObjectArraySorter
      * @param $methodName
      * @return array
      */
-    public static function sortByMethodResult(array $array, $methodName)
+    public static function sortByMethodResult(array $array, $methodName, $saveDuplicateKeys = false)
     {
         $sortedArray = [];
         $methodName = preg_replace('#\(|\)#', '', $methodName);
@@ -66,10 +66,13 @@ class ObjectArraySorter
                 self::isMethodExists($k, $method);
                 $k = $k->$method();
             }
+            if ($saveDuplicateKeys && isset($sortedArray[$k])) {
+                $k = self::getUniqueKeyName($k, $sortedArray);
+            }
             $sortedArray[$k] = $object;
         }
+        
         ksort($sortedArray, SORT_FLAG_CASE | SORT_NATURAL);
-
         return $sortedArray;
     }
 
@@ -99,6 +102,13 @@ class ObjectArraySorter
     }
 
     //Protected methods
+    protected static function getUniqueKeyName($key, $array)
+    {
+        do {
+            $key .= "'";
+        } while(array_key_exists($key, $array));
+        return $key;
+    }
     protected static function isObject($object)
     {
         if (!is_object($object)) {
