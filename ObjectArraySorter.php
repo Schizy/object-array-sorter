@@ -48,6 +48,21 @@ class ObjectArraySorter
     }
 
     /*
+     * Sort by object's attribute
+     * @param array $array
+     * @param $attributeName
+     * @return array
+     */
+    public static function sortByAttribute(array $array, $attributeName)
+    {
+        usort($array, function($a, $b) use($attributeName) {
+            return strcmp($a->$attributeName, $b->$attributeName);
+        });
+
+        return $array;
+    }
+
+    /*
      * Set the method results (can be chained) as array keys (sorted ASC)
      * @param array $array
      * @param $methodName
