@@ -55,7 +55,7 @@ class ObjectArraySorter
      */
     public static function sortByAttribute(array $array, $attributeName)
     {
-        usort($array, function($a, $b) use($attributeName) {
+        uasort($array, function($a, $b) use($attributeName) {
             return strcmp($a->$attributeName, $b->$attributeName);
         });
 
