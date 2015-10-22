@@ -90,25 +90,24 @@ class ObjectArraySorter
         ksort($sortedArray, SORT_FLAG_CASE | SORT_NATURAL);
         return $sortedArray;
     }
-
     /*
-     * Filter an array by testing methods result
-     * @param array $array
+     * Filter an array by expecting method result
+     * @param array $array Input data
      * @param $methodName
-     * @return array
+     * @param array|null $expected expecting whitelist
+     * @return array Return the filtered initial array
      */
-    public static function filterByMethodResult(array $array, $methodName)
+    public static function filterByMethodResult(array $array, $methodName, array $expected = null)
     {
-        //TODO: let the method chaining here too
-        //TODO: precise the expected result in third argument?
-
+        //TODO: handle the method chaining here too
         $sortedArray = [];
-
         foreach ($array as $i => $object) {
             self::isObject($object);
             self::isMethodExists($object, $methodName);
 
-            if ($object->$methodName()) {
+            if (!$expected && $object->$methodName() //If no expects, we simply want a "truthy" value
+                OR in_array($object->$methodName(), $expected)) { //Otherwise, we test the whitelist
+
                 $sortedArray[$i] = $object;
             }
         }
