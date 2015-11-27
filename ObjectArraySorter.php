@@ -1,5 +1,5 @@
 <?php
-namespace Backelite\AppBundle\ObjectArraySorter;
+namespace AppBundle\ObjectArraySorter;
 
 class ObjectArraySorter
 {
