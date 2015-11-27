@@ -114,6 +114,25 @@ class ObjectArraySorter
 
         return $sortedArray;
     }
+    
+    /**
+     * Return a new array that groups the results together
+     * @param array $array Input data
+     * @param $methodName
+     * @return array Return the filtered initial array
+     */
+    public static function groupByMethodResult(array $array, $methodName)
+    {
+        $sortedArray = [];
+        foreach ($array as $i => $object) {
+            self::isObject($object);
+            self::isMethodExists($object, $methodName);
+
+            $sortedArray[$object->$methodName()][$i] = $object;
+        }
+
+        return $sortedArray;
+    }
 
     //Protected methods
     protected static function getUniqueKeyName($key, $array)
